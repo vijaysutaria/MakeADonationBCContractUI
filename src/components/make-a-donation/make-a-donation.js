@@ -92,6 +92,8 @@ class MakeADonation extends React.Component {
       this.setState({ "name": "" });
       this.setState({ "message": "" });
 
+      this.getMemos();
+
     } catch (error) {
       console.error(error);
     }
