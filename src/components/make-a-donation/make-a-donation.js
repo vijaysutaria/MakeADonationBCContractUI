@@ -12,7 +12,7 @@ class MakeADonation extends React.Component {
     super();
 
     this.state = {
-      currentAccount: '',
+      currentAccount: undefined,
       name: '',
       message: '',
       memos: ''
@@ -45,7 +45,11 @@ class MakeADonation extends React.Component {
   async isWalletConnected() {
     try {
       const { ethereum } = window;
-
+      if (!ethereum) {
+        console.log("Please install meta mask");
+        alert('No meta mask wallet found to connect');
+        return;
+      }
       const accounts = await ethereum.request({ method: 'eth_accounts' });
       return accounts.length > 0;
     } catch (error) {
@@ -122,70 +126,73 @@ class MakeADonation extends React.Component {
   }
 
   render() {
-    const { memos } = this.state;
+    const { memos, currentAccount } = this.state;
+
     return (
-      <div>
-        <div className="row">
-          Please Donate To This Project
-        </div>
-        <div className='row'>
-          <div className='col-2'>
-            Your Name :
-          </div>
-          <div className='col'>
-            <input type="text" onChange={this.onNameChange}></input>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-2'>
-            Your Message :
-          </div>
-          <div className='col'>
-            <textarea onChange={this.onMessageChange}></textarea>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-2'>
-            <Button onClick={this.onDonate}>Donate 0.0001 ETH</Button>
-          </div>
-        </div>
-        <div className='row'>
-          <div className="col"></div>
-        </div>
-        <div className='row'>
-          <div className="col"></div>
-        </div>
-        {memos && memos.length && (
+      currentAccount && (
+        <div>
           <div className="row">
-            <div className='row'>
-              <div className="col">
-                Past donations by different donators :
-              </div>
+            Please Donate To This Project
+          </div>
+          <div className='row'>
+            <div className='col-2'>
+              Your Name :
             </div>
-            <div className='row'>
-              <div className="col">
-                <Table>
-                  <tr>
-                    <th>Name</th>
-                    <th>Message</th>
-                    <th>Timestamp</th>
-                    <th>Sender Address</th>
-                  </tr>
-                  {memos.map((memo) => (
-                    <tr>
-                      <td>{memo.name}</td>
-                      <td>{memo.message}</td>
-                      <td>{memo.timestamp.toNumber()}</td>
-                      <td>{memo.from}</td>
-                    </tr>
-                  ))
-                  }
-                </Table>
-              </div>
+            <div className='col'>
+              <input type="text" onChange={this.onNameChange}></input>
             </div>
           </div>
-        )}
-      </div>
+          <div className='row'>
+            <div className='col-2'>
+              Your Message :
+            </div>
+            <div className='col'>
+              <textarea onChange={this.onMessageChange}></textarea>
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-2'>
+              <Button onClick={this.onDonate}>Donate 0.0001 ETH</Button>
+            </div>
+          </div>
+          <div className='row'>
+            <div className="col"></div>
+          </div>
+          <div className='row'>
+            <div className="col"></div>
+          </div>
+          {memos && memos.length && (
+            <div className="row">
+              <div className='row'>
+                <div className="col">
+                  Past donations by different donators :
+                </div>
+              </div>
+              <div className='row'>
+                <div className="col">
+                  <Table>
+                    <tr>
+                      <th>Name</th>
+                      <th>Message</th>
+                      <th>Timestamp</th>
+                      <th>Sender Address</th>
+                    </tr>
+                    {memos.map((memo) => (
+                      <tr>
+                        <td>{memo.name}</td>
+                        <td>{memo.message}</td>
+                        <td>{memo.timestamp.toNumber()}</td>
+                        <td>{memo.from}</td>
+                      </tr>
+                    ))
+                    }
+                  </Table>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )
     );
   }
 }

@@ -1,6 +1,13 @@
-# Getting Started with Create React App
+# Introduction
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is an React-UI application connects with contract deployed to Goerli Test Net
+# Prerequisite
+
+You must have meta mask extension installed in your google chrome browser
+Click [here](http://makeadonation.s3-website.eu-west-2.amazonaws.com/) to see the running version of this app
+
+
+If you  want to check Solidity code of contract, then its availabe [here](https://github.com/vijaysutaria/MakeADonationBCContract)
 
 ## Available Scripts
 
