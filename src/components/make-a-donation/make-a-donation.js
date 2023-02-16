@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ethers } from 'ethers';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import abi from './../../MakeADonation.json';
 // const { ethers } = require("ethers");
 
@@ -26,19 +26,19 @@ class MakeADonation extends React.Component {
     }
   }
 
-  onNameChange(event) {
+  onNameChange = (event) => {
     this.setState({ 'name': event.target.value });
   }
 
-  onMessageChange(event) {
+  onMessageChange = (event) => {
     this.setState({ 'message': event.target.value });
   }
 
-  onMemoChange() {
+  onMemoChange = () => {
     this.setState({ 'memos': "" });
   }
 
-  async onDonate() {
+  onDonate = async () => {
     await this.makeADonation();
   }
 
@@ -47,13 +47,7 @@ class MakeADonation extends React.Component {
       const { ethereum } = window;
 
       const accounts = await ethereum.request({ method: 'eth_accounts' });
-      console.log(accounts);
-
-      if (accounts.length > 0) {
-        const account = accounts[0];
-        console.log(account);
-        return true;
-      }
+      return accounts.length > 0;
     } catch (error) {
       console.error(error);
     }
@@ -90,7 +84,7 @@ class MakeADonation extends React.Component {
       const makeADonation = new ethers.Contract(this.contactAddress, abi.abi, signer);
 
       console.log("Making donation");
-      const makeADonationTxn = await makeADonation.makeDonation(this.state.name, this.state.message, { value: ethers.utils.formatEther('0.001') });
+      const makeADonationTxn = await makeADonation.makeDonation(this.state.name, this.state.message, { value: ethers.utils.parseEther('0.0001') });
       await makeADonationTxn.wait();
       console.log("Mined", makeADonationTxn.hash);
       console.log("Donation complete");
@@ -126,6 +120,7 @@ class MakeADonation extends React.Component {
   }
 
   render() {
+    const { memos } = this.state;
     return (
       <div>
         <div className="row">
@@ -149,9 +144,45 @@ class MakeADonation extends React.Component {
         </div>
         <div className='row'>
           <div className='col-2'>
-            <Button onClick={this.onDonate}>Donate 1 ETH</Button>
+            <Button onClick={this.onDonate}>Donate 0.0001 ETH</Button>
           </div>
         </div>
+        <div className='row'>
+          <div className="col"></div>
+        </div>
+        <div className='row'>
+          <div className="col"></div>
+        </div>
+        {memos && memos.length && (
+          <div className="row">
+            <div className='row'>
+              <div className="col">
+                Past donations by different donators :
+              </div>
+            </div>
+            <div className='row'>
+              <div className="col">
+                <Table>
+                  <tr>
+                    <th>Name</th>
+                    <th>Message</th>
+                    <th>Timestamp</th>
+                    <th>Sender Address</th>
+                  </tr>
+                  {memos.map((memo) => (
+                    <tr>
+                      <td>{memo.name}</td>
+                      <td>{memo.message}</td>
+                      <td>{memo.timestamp.toNumber()}</td>
+                      <td>{memo.from}</td>
+                    </tr>
+                  ))
+                  }
+                </Table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
